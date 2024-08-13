@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <title>URL Shrinker</title>
+  <style>
+    body {
+      background-color: #f1f2f6;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    h1 {
+      color: #17a2b8;
+      text-align: center;
+      margin-top: 20px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .form-inline {
+      justify-content: center;
+    }
+    .form-control {
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    }
+    table {
+      margin-top: 30px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    th {
+      background-color: #17a2b8;
+      color: #fff;
+      text-align: center;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+    td {
+      text-align: center;
+      vertical-align: middle;
+    }
+    .container {
+      margin-top: 50px;
+    }
+    .btn-success {
+      background-color: #28a745;
+      border: none;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s, transform 0.3s;
+    }
+    .btn-success:hover {
+      background-color: #218838;
+      transform: translateY(-2px);
+    }
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>URL Shrinker</h1>
+    <form action="/shortUrls" method="POST" class="my-4 form-inline">
+      <label for="fullUrl" class="sr-only">Url</label>
+      <input required placeholder="Enter your URL here" type="url" name="fullUrl" id="fullUrl" class="form-control col-md-8 mr-2">
+      <button class="btn btn-success" type="submit">Shrink</button>
+    </form>
+    
+    <table class="table table-striped table-bordered table-hover table-responsive-md">
+      <thead>
+        <tr>
+          <th>Full URL</th>
+          <th>Short URL</th>
+          <th>Clicks</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% shortUrls.forEach(shortUrl => { %>
+          <tr>
+            <td><a href="<%= shortUrl.full %>" target="_blank"><%= shortUrl.full %></a></td>
+            <td><a href="<%= shortUrl.short %>" target="_blank"><%= shortUrl.short %></a></td>
+            <td><%= shortUrl.clicks %></td>
+            <td>
+              <button class="btn btn-info btn-sm copy-btn" data-url="<%= shortUrl.short %>">Copy</button>
+              <button class="btn btn-danger btn-sm delete-btn" data-id="<%= shortUrl.id %>">Delete</button>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="toast" data-delay="3000">
+    <div class="toast-header">
+      <strong class="mr-auto">URL Shrinker</strong>
+      <small>Just now</small>
+      <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
+    </div>
+    <div class="toast-body">
+      URL copied to clipboard!
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poTjU7RYMnc1VZ3TvkqPj8P5J6KIX5T9Lt5ilJHjtpjSi3R6Nk" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldvBO2txb17VJ5SkEd9J5k7F6o3oq35L2V7Ap7x" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-1CmrxMRARb6aLqgBO7yyAxTOQE2AKb9GfXnE4IJLg0tq6smXKp4YfRvH+8abtTE1" crossorigin="anonymous"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const copyButtons = document.querySelectorAll('.copy-btn');
+      const toast = $('.toast');
+
+      copyButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const url = this.getAttribute('data-url');
+          navigator.clipboard.writeText(url).then(() => {
+            toast.toast('show');
+          });
+        });
+      });
+
+      const deleteButtons = document.querySelectorAll('.delete-btn');
+      deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const id = this.getAttribute('data-id');
+          // Placeholder for delete functionality (e.g., an AJAX request)
+          alert('Delete URL with ID: ' + id);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
